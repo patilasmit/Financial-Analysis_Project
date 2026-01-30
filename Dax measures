@@ -1,0 +1,43 @@
+DAX Queries:
+here we are making a age_group of customer age using queries for practice.
+1. AgeGroup = SWITCH(
+TRUE(),
+'public cust_detail'[customer_age] < 30, "20-30",
+'public cust_detail'[customer_age] >= 30 && 'public cust_detail'[customer_age] < 40, "30-40",
+'public cust_detail'[customer_age] >= 40 && 'public cust_detail'[customer_age] < 50, "40-50",
+'public cust_detail'[customer_age] >= 50 && 'public cust_detail'[customer_age] < 60, "50-60",
+'public cust_detail'[customer_age] >= 60, "60+",
+"unknown"
+)
+
+we are making a income group of customer using queries for practice.
+2. IncomeGroup = SWITCH(
+TRUE(),
+'public cust_detail'[income] < 35000, "Low",
+'public cust_detail'[income] >= 35000 && 'public cust_detail'[income] <70000, "Med",
+'public cust_detail'[income] >= 70000, "High",
+"unknown"
+)
+
+here we are just making an additional colunm to sort week_numbers.
+3. week_num2 = WEEKNUM('public cc_detail'[week_start_date])
+
+creating an revenue column using some valuse.
+4. Revenue = 'public cc_detail'[annual_fees] + 'public cc_detail'[total_trans_amt] + 'public cc_detail'[interest_earned]
+
+current week revenue measure
+5.Current_week_Revenue = CALCULATE(
+SUM('public cc_detail'[Revenue]),
+FILTER(
+ALL('public cc_detail'),
+'public cc_detail'[week_num2] = MAX('public cc_detail'[week_num2])))
+
+previous week revenue measure
+6.Previous_week_Revenue = CALCULATE(
+SUM('public cc_detail'[Revenue]),
+FILTER(
+ALL('public cc_detail'),
+'public cc_detail'[week_num2] = MAX('public cc_detail'[week_num2])-1))
+
+Week on week revenue 
+7. Wow = Divide ((([Current_week_Revenue] - [Previous_week_Revenue] , [Previous_week_Revenue])))
